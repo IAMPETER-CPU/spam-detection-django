@@ -525,7 +525,7 @@
         </form>
 
         <!-- Result area -->
-        {% if result %}
+        {% if submitted and result %}
         <div class="result {{ result|lower }}">
             <h2>
                 <i class="fas {% if result == 'Spam' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %}"></i>

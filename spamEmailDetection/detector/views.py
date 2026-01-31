@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 
 # Create your views here.
 import pandas as pd
@@ -25,13 +25,22 @@ def predict_message(message):
 
 
 def Home(request):
-    result = None
     if request.method == 'POST':
         form = MessageForm(request.POST)
         if form.is_valid():
             message = form.cleaned_data['text']
             result = predict_message(message)
-    else:
-        form = MessageForm()
-    return render(request, 'home.html', {'form': form, 'result': result})
 
+            # store result temporarily
+            request.session['result'] = result
+            return redirect('home')  # 👈 KEY LINE
+
+    # GET request
+    result = request.session.pop('result', None)
+    form = MessageForm()
+
+    return render(request, 'home.html', {
+        'form': form,
+        'result': result,
+        'submitted': result is not None
+    })
